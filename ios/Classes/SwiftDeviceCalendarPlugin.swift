@@ -88,6 +88,7 @@ public class SwiftDeviceCalendarPlugin: NSObject, FlutterPlugin {
     let createOrUpdateEventMethod = "createOrUpdateEvent"
     let createCalendarMethod = "createCalendar"
     let deleteEventMethod = "deleteEvent"
+    let deleteDefaultCalendarMatchDescriptionEventMethod = "deleteDefaultCalendarMatchDescriptionEvent"
     let deleteEventInstanceMethod = "deleteEventInstance"
     let calendarIdArgument = "calendarId"
     let startDateArgument = "startDate"
@@ -117,6 +118,7 @@ public class SwiftDeviceCalendarPlugin: NSObject, FlutterPlugin {
     let remindersArgument = "reminders"
     let minutesArgument = "minutes"
     let followingInstancesArgument = "followingInstances"
+    let subDescriptionArgument = "subDescription"
     let calendarNameArgument = "calendarName"
     let calendarColorArgument = "calendarColor"
     let availabilityArgument = "availability"
@@ -144,6 +146,8 @@ public class SwiftDeviceCalendarPlugin: NSObject, FlutterPlugin {
             deleteEvent(call, result)
         case deleteEventInstanceMethod:
             deleteEvent(call, result)
+        case deleteDefaultCalendarMatchDescriptionEventMethod:
+            deleteDefaultCalendarMatchDescriptionEvent(call,result)
         case createCalendarMethod:
             createCalendar(call, result)
         default:
@@ -727,7 +731,63 @@ public class SwiftDeviceCalendarPlugin: NSObject, FlutterPlugin {
             }
         }, result: result)
     }
-    
+
+    ///删除默认Calendar里面描述中含有指定字段的event
+    private func deleteDefaultCalendarMatchDescriptionEvent(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
+        checkPermissionsThenExecute(permissionsGrantedAction: {
+            let arguments = call.arguments as! Dictionary<String, AnyObject>
+            let calendarId = arguments[calendarIdArgument] as! String
+            let eventId = arguments[eventIdArgument] as! String
+            let startDateNumber = arguments[eventStartDateArgument] as? NSNumber
+            let endDateNumber = arguments[eventEndDateArgument] as? NSNumber
+            let followingInstances = arguments[followingInstancesArgument] as? Bool
+            let subDescription = arguments[subDescriptionArgument] as! String
+
+            var ekCalendar = self.eventStore.calendar(withIdentifier: calendarId)
+
+            if ekCalendar == nil {
+                ekCalendar = self.eventStore.defaultCalendarForNewEvents;
+                return
+            }
+
+            if ekCalendar == nil {
+                self.finishWithCalendarNotFoundError(result: result, calendarId: calendarId)
+                return
+            }
+
+            if !(ekCalendar!.allowsContentModifications) {
+                self.finishWithCalendarReadOnlyError(result: result, calendarId: calendarId)
+                return
+            }
+
+            // 获取所有的事件（前后90天）
+            let startDate = Date().addingTimeInterval(-3600*24*90)
+            let endDate = Date().addingTimeInterval(3600*24*90)
+            let predicate2 = eventStore.predicateForEvents(withStart: startDate,
+                                                           end: endDate, calendars: nil)
+            print("提醒事件查询范围 开始:\(startDate) 结束:\(endDate)")
+
+            if let eV = eventStore.events(matching: predicate2) as [EKEvent]? {
+                for i in eV {
+                    print("标题  \(i.description)" )
+                    ///description里面包含指定的字段才进行删除
+                    if(!subDescription.isEmpty && i.description.contains(subDescription)){
+
+                        do {
+                            try self.eventStore.remove(i, span: .futureEvents)
+                            result(true)
+                        } catch {
+                            self.eventStore.reset()
+                            result(FlutterError(code: self.genericError, message: error.localizedDescription, details: nil))
+                        }
+                    }
+
+                }
+            }
+
+        }, result: result)
+    }
+
     private func finishWithUnauthorizedError(result: @escaping FlutterResult) {
         result(FlutterError(code:self.unauthorizedErrorCode, message: self.unauthorizedErrorMessage, details: nil))
     }
