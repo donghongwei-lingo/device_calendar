@@ -45,7 +45,7 @@ class _CalendarsPageState extends State<CalendarsPage> {
             padding: const EdgeInsets.all(10.0),
             child: Text(
               'WARNING: some aspects of saving events are hardcoded in this example app. As such we recommend you do not modify existing events as this may result in loss of information',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.headline,
             ),
           ),
           Expanded(
@@ -72,7 +72,7 @@ class _CalendarsPageState extends State<CalendarsPage> {
                           flex: 1,
                           child: Text(
                             _calendars[index].name,
-                            style: Theme.of(context).textTheme.subtitle1,
+                            style: Theme.of(context).textTheme.subtitle,
                           ),
                         ),
                         Container(
