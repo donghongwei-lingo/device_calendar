@@ -6,7 +6,7 @@ class ChannelConstants {
   static const String methodNameRetrieveCalendars = 'retrieveCalendars';
   static const String methodNameRetrieveEvents = 'retrieveEvents';
   static const String methodNameDeleteEvent = 'deleteEvent';
-  static const String methodNameDeleteDefaultCalendarMatchDescription = 'deleteDefaultCalendarMatchDescription';
+  static const String methodNameDeleteDefaultCalendarMatchDescriptionEvent = 'deleteDefaultCalendarMatchDescriptionEvent';
 
   static const String methodNameDeleteEventInstance = 'deleteEventInstance';
   static const String methodNameCreateOrUpdateEvent = 'createOrUpdateEvent';

@@ -149,7 +149,7 @@ class DeviceCalendarPlugin {
       String description,
       ) async {
     return _invokeChannelMethod(
-      ChannelConstants.methodNameDeleteDefaultCalendarMatchDescription,
+      ChannelConstants.methodNameDeleteDefaultCalendarMatchDescriptionEvent,
       assertParameters: (result) {
         _validateCalendarIdParameter(
           result,
