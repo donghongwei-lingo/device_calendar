@@ -736,11 +736,6 @@ public class SwiftDeviceCalendarPlugin: NSObject, FlutterPlugin {
     private func deleteDefaultCalendarMatchDescriptionEvent(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
         checkPermissionsThenExecute(permissionsGrantedAction: {
             let arguments = call.arguments as! Dictionary<String, AnyObject>
-            let calendarId = arguments[calendarIdArgument] as! String
-            let eventId = arguments[eventIdArgument] as! String
-            let startDateNumber = arguments[eventStartDateArgument] as? NSNumber
-            let endDateNumber = arguments[eventEndDateArgument] as? NSNumber
-            let followingInstances = arguments[followingInstancesArgument] as? Bool
             let subDescription = arguments[descriptionArgument] as! String
 
             var ekCalendar = self.eventStore.calendar(withIdentifier: calendarId)
