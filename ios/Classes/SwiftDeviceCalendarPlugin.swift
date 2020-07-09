@@ -738,12 +738,7 @@ public class SwiftDeviceCalendarPlugin: NSObject, FlutterPlugin {
             let arguments = call.arguments as! Dictionary<String, AnyObject>
             let subDescription = arguments[descriptionArgument] as! String
 
-            var ekCalendar = self.eventStore.calendar(withIdentifier: calendarId)
-
-            if ekCalendar == nil {
-                ekCalendar = self.eventStore.defaultCalendarForNewEvents;
-                return
-            }
+            var ekCalendar = self.eventStore.defaultCalendarForNewEvents;
 
             if ekCalendar == nil {
                 self.finishWithCalendarNotFoundError(result: result, calendarId: calendarId)
