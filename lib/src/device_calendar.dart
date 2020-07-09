@@ -145,6 +145,31 @@ class DeviceCalendarPlugin {
     );
   }
 
+  Future<Result<bool>> deleteDefaultCalendarMatchDescription(
+      String description,
+      ) async {
+    return _invokeChannelMethod(
+      ChannelConstants.methodNameDeleteDefaultCalendarMatchDescription,
+      assertParameters: (result) {
+        _validateCalendarIdParameter(
+          result,
+          description,
+        );
+
+        _assertParameter(
+          result,
+          description?.isNotEmpty ?? false,
+          ErrorCodes.invalidArguments,
+          ErrorMessages.deleteEventInvalidArgumentsMessage,
+        );
+      },
+      arguments: () => <String, Object>{
+        ChannelConstants.parameterNameDescription: description,
+      },
+    );
+  }
+
+
   /// Deletes an instance of a recurring event from a calendar. This should be used for a recurring event only.\
   /// If `startDate`, `endDate` or `deleteFollowingInstances` is not valid or null, then all instances of the event will be deleted.
   ///

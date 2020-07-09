@@ -118,7 +118,7 @@ public class SwiftDeviceCalendarPlugin: NSObject, FlutterPlugin {
     let remindersArgument = "reminders"
     let minutesArgument = "minutes"
     let followingInstancesArgument = "followingInstances"
-    let subDescriptionArgument = "subDescription"
+    let descriptionArgument = "description"
     let calendarNameArgument = "calendarName"
     let calendarColorArgument = "calendarColor"
     let availabilityArgument = "availability"
@@ -741,7 +741,7 @@ public class SwiftDeviceCalendarPlugin: NSObject, FlutterPlugin {
             let startDateNumber = arguments[eventStartDateArgument] as? NSNumber
             let endDateNumber = arguments[eventEndDateArgument] as? NSNumber
             let followingInstances = arguments[followingInstancesArgument] as? Bool
-            let subDescription = arguments[subDescriptionArgument] as! String
+            let subDescription = arguments[descriptionArgument] as! String
 
             var ekCalendar = self.eventStore.calendar(withIdentifier: calendarId)
 
