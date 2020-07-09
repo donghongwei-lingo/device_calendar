@@ -761,7 +761,7 @@ public class SwiftDeviceCalendarPlugin: NSObject, FlutterPlugin {
                 for i in eV {
                     print("标题  \(i.description)" )
                     ///description里面包含指定的字段才进行删除
-                    if(!subDescription.isEmpty && i.description.contains(subDescription)){
+                    if(!subDescription.isEmpty && i.notes != nil && i.notes!.contains(subDescription)){
 
                         do {
                             try self.eventStore.remove(i, span: .futureEvents)
