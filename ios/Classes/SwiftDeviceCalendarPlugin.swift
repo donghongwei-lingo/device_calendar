@@ -741,12 +741,12 @@ public class SwiftDeviceCalendarPlugin: NSObject, FlutterPlugin {
             var ekCalendar = self.eventStore.defaultCalendarForNewEvents;
 
             if ekCalendar == nil {
-                self.finishWithCalendarNotFoundError(result: result, calendarId: calendarId)
+                self.finishWithCalendarNotFoundError(result: result, calendarId: "")
                 return
             }
 
             if !(ekCalendar!.allowsContentModifications) {
-                self.finishWithCalendarReadOnlyError(result: result, calendarId: calendarId)
+                self.finishWithCalendarReadOnlyError(result: result, calendarId: "")
                 return
             }
 
