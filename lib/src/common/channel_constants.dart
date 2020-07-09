@@ -13,7 +13,7 @@ class ChannelConstants {
   static const String methodNameCreateCalendar = 'createCalendar';
 
   static const String parameterNameCalendarId = 'calendarId';
-  static const String parameterNameDescription = 'Description';
+  static const String parameterNameDescription = 'description';
   static const String parameterNameStartDate = 'startDate';
   static const String parameterNameEndDate = 'endDate';
   static const String parameterNameEventId = 'eventId';
