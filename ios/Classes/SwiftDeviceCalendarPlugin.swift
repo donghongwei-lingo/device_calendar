@@ -753,13 +753,13 @@ public class SwiftDeviceCalendarPlugin: NSObject, FlutterPlugin {
             // 获取所有的事件（前后90天）
             let startDate = Date().addingTimeInterval(-3600*24*90)
             let endDate = Date().addingTimeInterval(3600*24*90)
-            let predicate2 = eventStore.predicateForEvents(withStart: startDate,
+            let predicate2 = self.eventStore.predicateForEvents(withStart: startDate,
                                                            end: endDate, calendars: nil)
             print("提醒事件查询范围 开始:\(startDate) 结束:\(endDate)")
 
-            if let eV = eventStore.events(matching: predicate2) as [EKEvent]? {
+            if let eV = self.eventStore.events(matching: predicate2) as [EKEvent]? {
                 for i in eV {
-                    print("标题  \(i.description)" )
+                    print("标题  \(i.notes)" )
                     ///description里面包含指定的字段才进行删除
                     if(!subDescription.isEmpty && i.notes != nil && i.notes!.contains(subDescription)){
 
