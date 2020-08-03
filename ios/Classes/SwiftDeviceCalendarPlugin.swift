@@ -89,6 +89,7 @@ public class SwiftDeviceCalendarPlugin: NSObject, FlutterPlugin {
     let createCalendarMethod = "createCalendar"
     let deleteEventMethod = "deleteEvent"
     let deleteDefaultCalendarMatchDescriptionEventMethod = "deleteDefaultCalendarMatchDescriptionEvent"
+    let deleteMultiCalendarEventMethod = "deleteMultiCalendarEvent"
     let deleteEventInstanceMethod = "deleteEventInstance"
     let calendarIdArgument = "calendarId"
     let startDateArgument = "startDate"
@@ -148,6 +149,8 @@ public class SwiftDeviceCalendarPlugin: NSObject, FlutterPlugin {
             deleteEvent(call, result)
         case deleteDefaultCalendarMatchDescriptionEventMethod:
             deleteDefaultCalendarMatchDescriptionEvent(call,result)
+        case deleteMultiCalendarEventMethod:
+            deleteMultiCalendarEvent(call,result)
         case createCalendarMethod:
             createCalendar(call, result)
         default:
@@ -755,6 +758,71 @@ public class SwiftDeviceCalendarPlugin: NSObject, FlutterPlugin {
             // 获取所有的事件（前后90天）
             let startDate = Date().addingTimeInterval(-3600*24*90)
             let endDate = Date().addingTimeInterval(3600*24*90)
+            let predicate2 = self.eventStore.predicateForEvents(withStart: startDate,
+                                                           end: endDate, calendars: nil)
+            print("提醒事件查询范围 开始:\(startDate) 结束:\(endDate)")
+
+            if let eV = self.eventStore.events(matching: predicate2) as [EKEvent]? {
+                for i in eV {
+                    print("标题  \(i.notes)" )
+                    ///description里面包含指定的字段才进行删除
+                    if(!subDescription.isEmpty && i.notes != nil && i.notes!.contains(subDescription)){
+
+                        do {
+                            try self.eventStore.remove(i, span: .futureEvents)
+                            result(true)
+                        } catch {
+                            self.eventStore.reset()
+                            result(FlutterError(code: self.genericError, message: error.localizedDescription, details: nil))
+                        }
+                    }
+
+                }
+            }
+
+        }, result: result)
+    }
+    
+    //日期 -> 字符串
+    private func date2String(_ date:Date, dateFormat:String = "yyyy-MM-dd") -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale.init(identifier: "zh_CN")
+        formatter.dateFormat = dateFormat
+        let date = formatter.string(from: date)
+        return date
+    }
+    
+    //字符串 -> 日期
+    private func string2Date(_ string:String, dateFormat:String = "yyyy-MM-dd") -> Date {
+        let formatter = DateFormatter()
+        formatter.locale = Locale.init(identifier: "zh_CN")
+        formatter.dateFormat = dateFormat
+        let date = formatter.date(from: string)
+        return date!
+    }
+    
+    ///删除默认Calendar里面描述中含有指定字段的event
+    private func deleteMultiCalendarEvent(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
+        checkPermissionsThenExecute(permissionsGrantedAction: {
+            let arguments = call.arguments as! Dictionary<String, AnyObject>
+            let subDescription = arguments[descriptionArgument] as! String
+            let delStartDate = arguments[startDateArgument] as! String;
+            let delEndDate = arguments[endDateArgument] as! String;
+
+            var ekCalendar = self.retrieveLingoCalendar()
+
+            if ekCalendar == nil {
+                self.finishWithCalendarNotFoundError(result: result, calendarId: "")
+                return
+            }
+
+            if !(ekCalendar.allowsContentModifications) {
+                self.finishWithCalendarReadOnlyError(result: result, calendarId: "")
+                return
+            }
+
+            let startDate = string2Date(delStartDate)
+            let endDate = string2Date(delEndDate)
             let predicate2 = self.eventStore.predicateForEvents(withStart: startDate,
                                                            end: endDate, calendars: nil)
             print("提醒事件查询范围 开始:\(startDate) 结束:\(endDate)")
