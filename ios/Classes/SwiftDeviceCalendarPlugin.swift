@@ -770,7 +770,7 @@ public class SwiftDeviceCalendarPlugin: NSObject, FlutterPlugin {
 
                         do {
                             try self.eventStore.remove(i, span: .futureEvents)
-                            result(true)
+
                         } catch {
                             self.eventStore.reset()
                             result(FlutterError(code: self.genericError, message: error.localizedDescription, details: nil))
@@ -778,6 +778,8 @@ public class SwiftDeviceCalendarPlugin: NSObject, FlutterPlugin {
                     }
 
                 }
+
+                result(true)
             }
 
         }, result: result)
@@ -835,7 +837,7 @@ public class SwiftDeviceCalendarPlugin: NSObject, FlutterPlugin {
 
                         do {
                             try self.eventStore.remove(i, span: .futureEvents)
-                            result(true)
+
                         } catch {
                             self.eventStore.reset()
                             result(FlutterError(code: self.genericError, message: error.localizedDescription, details: nil))
@@ -843,6 +845,8 @@ public class SwiftDeviceCalendarPlugin: NSObject, FlutterPlugin {
                     }
 
                 }
+
+                result(true)
             }
 
         }, result: result)
