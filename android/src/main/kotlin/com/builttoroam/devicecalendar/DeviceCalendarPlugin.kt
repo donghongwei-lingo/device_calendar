@@ -145,11 +145,10 @@ class DeviceCalendarPlugin() : MethodCallHandler {
 
             DELETE_MULTI_CALENDAR_EVENT_METHOD -> {
 
-//                val description? = call.argument<String>(CALENDAR_DESCRIPTION_ARGUMENT)
-                val description = "课程"
+                val description = call.argument<String>(CALENDAR_DESCRIPTION_ARGUMENT)
                 val startDate = call.argument<Long>(EVENT_START_DATE_ARGUMENT)
                 val endDate = call.argument<Long>(EVENT_END_DATE_ARGUMENT)
-                _calendarDelegate.deleteEventsByDescription(description, result)
+                _calendarDelegate.deleteEventsByDescription(description!!, result)
 
             }
             else -> {
