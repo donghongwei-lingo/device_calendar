@@ -568,6 +568,7 @@ class CalendarDelegate : PluginRegistry.RequestPermissionsResultListener {
 //                    }
                 }
             }
+            finishWithSuccess(true, pendingChannelResult)
         }else{
             finishWithError(NOT_FOUND, "event could not be found", pendingChannelResult)
             return
