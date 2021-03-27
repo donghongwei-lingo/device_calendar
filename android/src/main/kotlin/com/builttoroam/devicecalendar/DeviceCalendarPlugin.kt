@@ -24,6 +24,7 @@ class DeviceCalendarPlugin() : MethodCallHandler {
     private val CREATE_OR_UPDATE_EVENT_METHOD = "createOrUpdateEvent"
     private val CREATE_CALENDAR_METHOD = "createCalendar"
     private val DELETE_CALENDAR_MATCH_DESCRIPTION_METHOD = "deleteDefaultCalendarMatchDescriptionEvent"
+    private val DELETE_MULTI_CALENDAR_EVENT_METHOD = "deleteMultiCalendarEvent"
 
     // Method arguments
     private val CALENDAR_ID_ARGUMENT = "calendarId"
@@ -140,6 +141,16 @@ class DeviceCalendarPlugin() : MethodCallHandler {
                 val localAccountName = call.argument<String>(LOCAL_ACCOUNT_NAME_ARGUMENT)
 
                 _calendarDelegate.createCalendar(calendarName!!, calendarColor, localAccountName!!, result)
+            }
+
+            DELETE_MULTI_CALENDAR_EVENT_METHOD -> {
+
+//                val description? = call.argument<String>(CALENDAR_DESCRIPTION_ARGUMENT)
+                val description = "课程"
+                val startDate = call.argument<Long>(EVENT_START_DATE_ARGUMENT)
+                val endDate = call.argument<Long>(EVENT_END_DATE_ARGUMENT)
+                _calendarDelegate.deleteEventsByDescription(description, result)
+
             }
             else -> {
                 result.notImplemented()
