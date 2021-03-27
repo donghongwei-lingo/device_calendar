@@ -547,6 +547,57 @@ class CalendarDelegate : PluginRegistry.RequestPermissionsResultListener {
         }
     }
 
+    fun deleteEventsByDescription(descripe: String, pendingChannelResult: MethodChannel.Result) {
+        val contentResolver: ContentResolver? = _context?.contentResolver
+        val eventCursor = contentResolver?.query(Uri.parse("content://com.android.calendar/events"), null, null, null, null)
+        if (eventCursor == null) {
+            finishWithError(NOT_FOUND, "eventCursor could not be found", pendingChannelResult)
+            return
+        }
+        if (eventCursor.columnCount > 0) {
+            while (eventCursor.moveToNext()) {
+                val description = eventCursor.getString(eventCursor.getColumnIndex("description"))
+                if (description != null && description.contains(descripe)) {
+                    val id = eventCursor.getInt(eventCursor.getColumnIndex(CalendarContract.Calendars._ID))
+                    val deleteUri = ContentUris.withAppendedId(Uri.parse("content://com.android.calendar/events"), id.toLong())
+                    val rows = contentResolver.delete(deleteUri, null, null)
+//                    if (rows == -1){
+//                        finishWithSuccess(true, pendingChannelResult)
+//                    }else{
+//                        finishWithError(GENERIC_ERROR, "delete failed", pendingChannelResult)
+//                    }
+                }
+            }
+        }else{
+            finishWithError(NOT_FOUND, "event could not be found", pendingChannelResult)
+            return
+        }
+    }
+
+
+    fun deleteMultiCalendar(descripe: String, pendingChannelResult: MethodChannel.Result) {
+        val contentResolver: ContentResolver? = _context?.contentResolver
+        val eventCursor = contentResolver?.query(Uri.parse("content://com.android.calendar/events"), null, null, null, null)
+        if (eventCursor == null) {
+            finishWithError(NOT_FOUND, "eventCursor could not be found", pendingChannelResult)
+            return
+        }
+        if (eventCursor.columnCount > 0) {
+            while (eventCursor.moveToNext()) {
+                val description = eventCursor.getString(eventCursor.getColumnIndex("description"))
+                if (description != null && description.contains(descripe)) {
+                    val id = eventCursor.getInt(eventCursor.getColumnIndex(CalendarContract.Calendars._ID))
+                    val deleteUri = ContentUris.withAppendedId(Uri.parse("content://com.android.calendar/events"), id.toLong())
+                    val rows = contentResolver.delete(deleteUri, null, null)
+                }
+            }
+            finishWithSuccess(true, pendingChannelResult)
+        }else{
+            finishWithError(NOT_FOUND, "event could not be found", pendingChannelResult)
+            return
+        }
+    }
+
     fun deleteEvent(calendarId: String, eventId: String, pendingChannelResult: MethodChannel.Result, startDate: Long? = null, endDate: Long? = null, followingInstances: Boolean? = null) {
         if (arePermissionsGranted()) {
             val existingCal = retrieveCalendar(calendarId, pendingChannelResult, true)
