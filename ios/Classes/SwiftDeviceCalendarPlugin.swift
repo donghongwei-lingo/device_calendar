@@ -871,10 +871,10 @@ public class SwiftDeviceCalendarPlugin: NSObject, FlutterPlugin {
                     var sour: EKSource?
 
                     for source in eventStore.sources {
-                        if source.sourceType == .calDAV && source.title == "iCloud" {
-                        sour = source
-                        break
-                      }
+                        if (source.sourceType == .calDAV && (source.title == "iCloud") || source.sourceType == .local){
+                            sour = source
+                            break
+                        }
                     }
 
                     yourReminderCalendar = EKCalendar(for: EKEntityType.event, eventStore: self.eventStore)
